@@ -1,16 +1,19 @@
 package DataBase.Entities;
 
+import javax.persistence.*;
+
+@Entity
 public class Goods
 {
+    @Id
+    @GeneratedValue(strategy= GenerationType.AUTO)
     private Integer id;
     private String name;
     private Double price;
 
-    public Goods()
+    protected Goods()
     {
-        id=0;
-        name="";
-        price=0.0;
+
     }
 
     public Goods(Integer id, String name, Double price) {
@@ -23,6 +26,13 @@ public class Goods
         id=0;
         this.name = name;
         this.price = price;
+    }
+
+    @Override
+    public String toString() {
+        return String.format(
+                "Goods[id=%d, name='%s', price='%f']",
+                id, name, price);
     }
 
     public Integer getId() {
