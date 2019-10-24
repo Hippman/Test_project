@@ -1,20 +1,24 @@
 package DataBase.Entities;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.Calendar;
+import java.util.Set;
 
 @Entity
+@Table(name="Orders")
 public class Order
 {
     @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
+    @GeneratedValue(strategy= GenerationType.IDENTITY)
+    @Column(name = "id", unique = true, nullable = false)
     private Integer id;
     private String client;
+    @Temporal(TemporalType.DATE)
     private Calendar dat;
     private String address;
+
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "id", cascade = CascadeType.ALL)
+    private Set<Order_line> lines;
 
     protected Order()
     {
@@ -38,7 +42,7 @@ public class Order
     public String toString() {
         return String.format(
                 "Goods[id=%d, client='%s', date='%s', address='%s']",
-                id, client, dat,address);
+                id, client, dat.toString(),address);
     }
     public Integer getId() {
         return id;
@@ -70,5 +74,17 @@ public class Order
 
     public void setAddress(String address) {
         this.address = address;
+    }
+
+    public Set<Order_line> getLines() {
+        return lines;
+    }
+
+    public void setLines(Set<Order_line> lines) {
+        this.lines = lines;
+    }
+
+    public void setDat(Calendar dat) {
+        this.dat = dat;
     }
 }

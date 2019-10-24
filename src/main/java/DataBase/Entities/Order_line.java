@@ -1,36 +1,37 @@
 package DataBase.Entities;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
 public class Order_line
 {
-
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
     private Integer id;
-    private Integer order_id;
     private Integer goods_id;
+    @Column(name = "goodscount")
     private Integer count;
 
-    public Order_line() {
-        id=order_id=goods_id=count=0;
+    @ManyToOne
+    @JoinColumn(name = "id", nullable = false, insertable = false, updatable = false)
+    private Order order;
+
+    protected Order_line() {
+
     }
 
-    public Order_line(Integer id, Integer order_id, Integer goods_id, Integer count) {
-        this.id = id;
-        this.order_id = order_id;
+    public Order_line(Integer goods_id, Integer count) {
+
         this.goods_id = goods_id;
         this.count = count;
+
     }
+
     @Override
     public String toString() {
         return String.format(
-                "Goods[id=%d, order_id='%d', goods_id='%d', count='%d']",
-                id, order_id, goods_id,count);
+                "Goods[id=%d,order_id='%d', goods_id='%d', count='%d']",
+                id,getOrder_id(),  goods_id,count);
     }
     public Integer getId() {
         return id;
@@ -40,12 +41,12 @@ public class Order_line
         this.id = id;
     }
 
-    public Integer getOrder_id() {
-        return order_id;
-    }
+    /*public Order getOrder() {
+        return order;
+    }*/
 
-    public void setOrder_id(Integer order_id) {
-        this.order_id = order_id;
+    public void setOrder(Order order) {
+        this.order = order;
     }
 
     public Integer getGoods_id() {
@@ -63,4 +64,9 @@ public class Order_line
     public void setCount(Integer count) {
         this.count = count;
     }
+
+    public Integer getOrder_id() {
+        return order.getId();
+    }
+
 }
