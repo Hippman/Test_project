@@ -1,15 +1,20 @@
 package DataBase.Entities;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Entity
 public class Goods
 {
     @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
+    @GeneratedValue(strategy= GenerationType.IDENTITY)
+    @Column(name = "id", unique = true, nullable = false)
     private Integer id;
     private String name;
     private Double price;
+
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "id")
+    private Set<Order_line> lines;
 
     protected Goods()
     {
@@ -57,5 +62,13 @@ public class Goods
 
     public void setPrice(Double price) {
         this.price = price;
+    }
+
+    public Set<Order_line> getLines() {
+        return lines;
+    }
+
+    public void setLines(Set<Order_line> lines) {
+        this.lines = lines;
     }
 }

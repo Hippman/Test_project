@@ -2,6 +2,7 @@ package DataBase.Entities;
 
 import javax.persistence.*;
 
+
 @Entity
 public class Order_line
 {
@@ -16,22 +17,24 @@ public class Order_line
     @JoinColumn(name = "id", nullable = false, insertable = false, updatable = false)
     private Order order;
 
+    @ManyToOne
+    @JoinColumn(name = "id", nullable = false, insertable = false, updatable = false)
+    private Goods goods;
+
     protected Order_line() {
 
     }
 
     public Order_line(Integer goods_id, Integer count) {
-
         this.goods_id = goods_id;
         this.count = count;
-
     }
 
     @Override
     public String toString() {
         return String.format(
                 "Goods[id=%d,order_id='%d', goods_id='%d', count='%d']",
-                id,getOrder_id(),  goods_id,count);
+                id,getOrder_id(),goods_id,count);
     }
     public Integer getId() {
         return id;
@@ -41,17 +44,13 @@ public class Order_line
         this.id = id;
     }
 
-    /*public Order getOrder() {
-        return order;
-    }*/
-
     public void setOrder(Order order) {
         this.order = order;
     }
 
-    public Integer getGoods_id() {
+    /*public Integer getGoods_id() {
         return goods_id;
-    }
+    }*/
 
     public void setGoods_id(Integer goods_id) {
         this.goods_id = goods_id;
@@ -66,7 +65,18 @@ public class Order_line
     }
 
     public Integer getOrder_id() {
-        return order.getId();
+        if(order!=null)return order.getId();
+        return 0;
     }
 
+    public Integer getGoods_id() {
+        return goods.getId();
+    }
+    public Goods getGoods() {
+        return goods;
+    }
+
+    public void setGoods(Goods goods) {
+        this.goods = goods;
+    }
 }

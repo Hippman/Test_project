@@ -6,6 +6,7 @@ import DataBase.Entities.Order_line;
 import DataBase.Repository.GoodsRepo;
 import DataBase.Repository.OrderRepo;
 import DataBase.Repository.Order_lineRepo;
+import com.google.gson.Gson;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -36,7 +37,9 @@ public class ServiceController {
     @RequestMapping( method = RequestMethod.GET,value="/getGoodsByID")
     public Goods getGoodsByID(@RequestParam(value="id",required=true) Integer id) throws ServiceException {
         GoodsRepo repository = getGoodsRepo();
-        return repository.findById(id);
+        Goods tmpgoods;
+        tmpgoods=repository.findById(id);
+        return tmpgoods;
     }
     @RequestMapping( method = RequestMethod.GET,value="/createGoods")
     public Goods createGoods(
@@ -80,7 +83,11 @@ public class ServiceController {
     public Order createOrder(
             @RequestParam(value="client",required=true) String client,
             @RequestParam(value="dat",required=true) String dat,
-            @RequestParam(value="address",required=true) String address) throws ServiceException {
+            @RequestParam(value="address",required=true) String address,
+            @RequestParam(value="order_line",required=true) String tmporderlines_str) throws ServiceException {
+        Gson gson=new Gson();
+        Order_line[] lines=gson.fromJson(tmporderlines_str,Order_line[].class);
+        for(int a=0;a<lines.length;a++)lines[a].setId(null);
         OrderRepo repository = getOrderRepo();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
         Calendar cal= Calendar.getInstance();
@@ -90,10 +97,15 @@ public class ServiceController {
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        Order tmporder=new Order(client,cal ,address);
+        GoodsRepo grepository = getGoodsRepo();
+
         Set<Order_line> tmporderlines=new HashSet<Order_line>();
-        tmporderlines.add(new Order_line(2,1));
+        Order_line line=new Order_line(2,1);
+        line.setGoods(grepository.findById(1));
+        tmporderlines.add(line);
+        Order tmporder=new Order(client,cal ,address);
         tmporder.setLines(tmporderlines);
+        //tmporder.setLines(new HashSet<Order_line>(Arrays.asList(lines)));
         tmporder =repository.save(tmporder);
 
         return tmporder;

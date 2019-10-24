@@ -20,6 +20,7 @@ public class Order
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "id", cascade = CascadeType.ALL)
     private Set<Order_line> lines;
 
+
     protected Order()
     {
 
