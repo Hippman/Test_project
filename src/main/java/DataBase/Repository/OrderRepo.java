@@ -19,7 +19,6 @@ public interface OrderRepo extends CrudRepository<Order, Long> {
 
     @Transactional
     @Modifying
-    //Integer id, String client, Calendar date, String address
     @Query(value="UPDATE Orders c SET c.Client = :Client, c.Dat = :date, c.Address = :address WHERE c.Id = :Id",nativeQuery = true)
     int updateById(@Param("Id") int Id, @Param("Client") String Name, @Param("date") Calendar date,
                    @Param("address") String Address);

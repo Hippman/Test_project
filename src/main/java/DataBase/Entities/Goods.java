@@ -1,24 +1,36 @@
 package DataBase.Entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.*;
-import java.util.Set;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
-public class Goods
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "relationClass"})
+public class Goods implements Serializable
 {
     @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
+    @GeneratedValue(strategy= GenerationType.AUTO)
     @Column(name = "id", unique = true, nullable = false)
     private Integer id;
     private String name;
     private Double price;
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "id")
-    private Set<Order_line> lines;
+
+    @OneToMany(mappedBy = "goods_id", cascade = CascadeType.ALL,fetch=FetchType.EAGER)
+    private List<Order_line2> order_id = new ArrayList<Order_line2>();
 
     protected Goods()
     {
 
+    }
+    public Goods (Goods goods)
+    {
+        this.id = goods.getId();
+        this.name = goods.getName();
+        this.price = goods.getPrice();
     }
 
     public Goods(Integer id, String name, Double price) {
@@ -64,11 +76,11 @@ public class Goods
         this.price = price;
     }
 
-    public Set<Order_line> getLines() {
-        return lines;
+    public List<Order_line2> getOrder_id() {
+        return order_id;
     }
 
-    public void setLines(Set<Order_line> lines) {
-        this.lines = lines;
+    public void setOrder_id(List<Order_line2> order_id) {
+        this.order_id = order_id;
     }
 }

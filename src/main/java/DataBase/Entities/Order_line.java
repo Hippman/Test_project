@@ -1,59 +1,33 @@
 package DataBase.Entities;
 
 import javax.persistence.*;
+import java.io.Serializable;
+
 
 
 @Entity
-public class Order_line
-{
-    @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
-    private Integer id;
-    private Integer goods_id;
+@Table(name = "Order_line")
+public class Order_line implements Serializable {
     @Column(name = "goodscount")
     private Integer count;
 
-    @ManyToOne
-    @JoinColumn(name = "id", nullable = false, insertable = false, updatable = false)
-    private Order order;
+    @EmbeddedId
+    EmbaddableOrderLine ID=new EmbaddableOrderLine();
 
     @ManyToOne
-    @JoinColumn(name = "id", nullable = false, insertable = false, updatable = false)
-    private Goods goods;
+    @MapsId("order_id")
+    @JoinColumn(name = "ORDER_ID", referencedColumnName = "id", updatable = false, insertable = false)
+    private Order order_id;
 
-    protected Order_line() {
 
-    }
+    @ManyToOne
+    @MapsId("goods_id")
+    @JoinColumn(name = "GOODS_ID", referencedColumnName = "id", updatable = false, insertable = false)
+    private Goods goods_id;
 
-    public Order_line(Integer goods_id, Integer count) {
-        this.goods_id = goods_id;
+    protected Order_line(){}
+    public Order_line(Integer count) {
         this.count = count;
-    }
-
-    @Override
-    public String toString() {
-        return String.format(
-                "Goods[id=%d,order_id='%d', goods_id='%d', count='%d']",
-                id,getOrder_id(),goods_id,count);
-    }
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public void setOrder(Order order) {
-        this.order = order;
-    }
-
-    /*public Integer getGoods_id() {
-        return goods_id;
-    }*/
-
-    public void setGoods_id(Integer goods_id) {
-        this.goods_id = goods_id;
     }
 
     public Integer getCount() {
@@ -64,19 +38,30 @@ public class Order_line
         this.count = count;
     }
 
-    public Integer getOrder_id() {
-        if(order!=null)return order.getId();
-        return 0;
+
+
+    public Goods getGoods_id() {
+        Goods tmpord=new Goods(goods_id);
+        return tmpord;
     }
 
-    public Integer getGoods_id() {
-        return goods.getId();
-    }
-    public Goods getGoods() {
-        return goods;
+    public void setGoods_id(Goods goods_id) {
+        this.ID.setGoods_id(goods_id.getId());
+        this.goods_id = goods_id;
     }
 
-    public void setGoods(Goods goods) {
-        this.goods = goods;
+    public Order_line(Integer count, Goods goods_id) {
+        this.count = count;
+        this.goods_id = goods_id;
+    }
+
+
+
+    public EmbaddableOrderLine getID() {
+        return ID;
+    }
+
+    public void setID(EmbaddableOrderLine ID) {
+        this.ID = ID;
     }
 }

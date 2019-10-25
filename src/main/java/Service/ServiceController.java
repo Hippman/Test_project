@@ -3,6 +3,7 @@ package Service;
 import DataBase.Entities.Goods;
 import DataBase.Entities.Order;
 import DataBase.Entities.Order_line;
+import DataBase.Entities.Order_line2;
 import DataBase.Repository.GoodsRepo;
 import DataBase.Repository.OrderRepo;
 import DataBase.Repository.Order_lineRepo;
@@ -16,7 +17,11 @@ import org.springframework.web.bind.annotation.RestController;
 import java.text.ParseException;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
+
+//import DataBase.Repository.Order_lineRepo;
 
 @RestController
 public class ServiceController {
@@ -86,9 +91,9 @@ public class ServiceController {
             @RequestParam(value="address",required=true) String address,
             @RequestParam(value="order_line",required=true) String tmporderlines_str) throws ServiceException {
         Gson gson=new Gson();
-        Order_line[] lines=gson.fromJson(tmporderlines_str,Order_line[].class);
-        for(int a=0;a<lines.length;a++)lines[a].setId(null);
-        OrderRepo repository = getOrderRepo();
+       // Order_line[] lines=gson.fromJson(tmporderlines_str,Order_line[].class);
+        //for(int a=0;a<lines.length;a++)lines[a].setId(null);
+
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
         Calendar cal= Calendar.getInstance();
         cal.setTime(sdf.parse(dat,new ParsePosition(0)));
@@ -98,17 +103,13 @@ public class ServiceController {
             e.printStackTrace();
         }
         GoodsRepo grepository = getGoodsRepo();
-
-        Set<Order_line> tmporderlines=new HashSet<Order_line>();
-        Order_line line=new Order_line(2,1);
-        line.setGoods(grepository.findById(1));
-        tmporderlines.add(line);
-        Order tmporder=new Order(client,cal ,address);
-        tmporder.setLines(tmporderlines);
-        //tmporder.setLines(new HashSet<Order_line>(Arrays.asList(lines)));
-        tmporder =repository.save(tmporder);
-
+        OrderRepo repository = getOrderRepo();
+        Goods goods=grepository.findById(1);
+        Order tmporder=new Order("Susanin",Calendar.getInstance(),"boloto");
+        tmporder.getGoods_id().add(new Order_line2(2,tmporder,goods));
+        tmporder=repository.save(tmporder);
         return tmporder;
+
     }
 
     @RequestMapping( method = RequestMethod.GET,value="/getOrderByID")
@@ -145,7 +146,7 @@ public class ServiceController {
         Iterable<Order_line> ret= repository.findAll();
         if(ret!=null) return ret;
         throw new ServiceException(2);
-    }
+    }/*
     //private Integer id;    private Integer order_id;    private Integer goods_id;    private Integer count;
     @RequestMapping( method = RequestMethod.GET,value="/createOrder_line")
     public Order_line createOrder_line(
@@ -176,7 +177,7 @@ public class ServiceController {
             @RequestParam(value="id",required=true) Integer id) throws ServiceException {
         Order_lineRepo repository = getOrder_lineRepo();
         repository.deleteById(id);
-    }
+    }*/
     //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     private GoodsRepo getGoodsRepo() throws ServiceException {
         if(goodsRepo==null) {

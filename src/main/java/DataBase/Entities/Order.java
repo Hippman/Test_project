@@ -1,55 +1,46 @@
 package DataBase.Entities;
 
 import javax.persistence.*;
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Set;
+import java.util.List;
 
 @Entity
 @Table(name="Orders")
-public class Order
+public class Order implements Serializable
 {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     @Column(name = "id", unique = true, nullable = false)
-    private Integer id;
+    private int id;
+
     private String client;
     @Temporal(TemporalType.DATE)
     private Calendar dat;
     private String address;
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "id", cascade = CascadeType.ALL)
-    private Set<Order_line> lines;
 
+    @OneToMany(mappedBy = "order_id", cascade = CascadeType.ALL,fetch=FetchType.EAGER)
+    private List<Order_line2> goods_id = new ArrayList<Order_line2>();
 
-    protected Order()
+    public Order()
     {
 
     }
-    public Order(Integer id, String client, Calendar dat, String address) {
-        this.id = id;
-        this.client = client;
-        this.dat = dat;
-        this.address = address;
-    }
 
     public Order(String client, Calendar dat, String address) {
-        id=0;
+
         this.client = client;
         this.dat = dat;
         this.address = address;
     }
 
-    @Override
-    public String toString() {
-        return String.format(
-                "Goods[id=%d, client='%s', date='%s', address='%s']",
-                id, client, dat.toString(),address);
-    }
-    public Integer getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -65,7 +56,7 @@ public class Order
         return dat;
     }
 
-    public void setDate(Calendar dat) {
+    public void setDat(Calendar dat) {
         this.dat = dat;
     }
 
@@ -77,15 +68,11 @@ public class Order
         this.address = address;
     }
 
-    public Set<Order_line> getLines() {
-        return lines;
+    public List<Order_line2> getGoods_id() {
+        return goods_id;
     }
 
-    public void setLines(Set<Order_line> lines) {
-        this.lines = lines;
-    }
-
-    public void setDat(Calendar dat) {
-        this.dat = dat;
+    public void setGoods_id(List<Order_line2> goods_id) {
+        this.goods_id = goods_id;
     }
 }
