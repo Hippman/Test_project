@@ -43,8 +43,8 @@ public class Order_line2 implements Serializable {
         this.count = count;
     }
 
-    public Order getOrder_id() {
-        return order_id;
+    public int getOrder_id() {
+        return order_id.getId();
     }
 
     public void setOrder_id(Order order_id) {
